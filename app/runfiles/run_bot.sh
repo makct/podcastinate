@@ -1,2 +1,2 @@
 #!/bin/bash
-python /opt/podcastinate/app/run.py
+gunicorn --config=python:gunicorn_config run:app

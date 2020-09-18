@@ -9,7 +9,7 @@ services:
     ports:
 #      - 80:80
 #      - 443:433
-      - 8443:8443
+      - 8443:5000
     environment:
       - PYTHONPATH=/opt/podcastinate/app
       - API_TOKEN=${API_TOKEN}
