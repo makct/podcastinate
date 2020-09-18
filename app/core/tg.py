@@ -41,10 +41,13 @@ def process_message(message):
         bot.send_message(message.chat.id, INVALID_LINK_ERR)
 
     try:
-        filepath, title = get_audio_from_video(url)
-        bot.send_audio(message.chat.id, filepath, title=title)
+        filepath, title, uploader = get_audio_from_video(url)
+        with open(filepath, "rb") as audio:
+            bot.send_audio(
+                message.chat.id, audio, caption=title, title=title, performer=uploader
+            )
         os.remove(filepath)
     except VideoProcessingError:
         bot.send_message(
-            message.chat.id, "Processing error. Check your link and try later."
+            message.chat.id, "Processing error. Check your link and try again later."
         )

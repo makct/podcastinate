@@ -1,2 +1,3 @@
 #!/bin/bash
-gunicorn run:app
+exec &> >(tee -a "/var/logs/podcastinate_web.log")
+python /opt/podcastinate/app/run.py

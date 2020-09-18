@@ -9,7 +9,7 @@ services:
     ports:
 #      - 80:80
 #      - 443:433
-      - 8444:8444
+      - 8443:8443
     environment:
       - PYTHONPATH=/opt/podcastinate/app
     volumes:
