@@ -1,4 +1,7 @@
 Flask==1.1.2
 gunicorn==20.0.4
+
 pytelegrambotapi==3.7.3
+
 youtube-dl==2020.9.14
+pydub==0.24.1

@@ -2,12 +2,13 @@ import os
 
 import telebot
 
-from .settings import API_TOKEN
 from .default_logging import file_logger
+from .settings import API_TOKEN
 from .youtube_handler import (
     NonYouTubeUrlError,
     VideoProcessingError,
     get_audio_from_video,
+    split_audio,
     validate_url,
 )
 
@@ -22,6 +23,15 @@ PROCESSING_ERROR_MSG = "Processing error. Check your link and try again later."
 
 
 bot = telebot.TeleBot(API_TOKEN)
+
+
+def send_audio(filepath, title, uploader, chat_id):
+    with open(filepath, "rb") as audio:
+        bot.send_audio(chat_id, audio, caption=title, title=title, performer=uploader)
+    try:
+        os.remove(filepath)
+    except OSError:
+        pass
 
 
 @bot.message_handler(commands=["start"])
@@ -46,17 +56,22 @@ def process_message(message):
 
     try:
         filepath, title, uploader = get_audio_from_video(url)
-        with open(filepath, "rb") as audio:
-            bot.send_audio(
-                message.chat.id, audio, caption=title, title=title, performer=uploader
-            )
+        splitted_audio = split_audio(filepath)
+
+        if len(splitted_audio) == 1:
+            send_audio(filepath, title, uploader, message.chat.id)
             file_logger.info(
                 f"{message.message_id} - response: "
                 f"{{ uploader: {uploader}, title: {title} }}"
             )
-        try:
-            os.remove(filepath)
-        except OSError:
-            pass
+        else:
+            for number, file_part in enumerate(splitted_audio):
+                part_title = f"{title}. Part {number}"
+                send_audio(file_part, part_title, uploader, message.chat.id)
+                file_logger.info(
+                    f"{message.message_id} - response: "
+                    f"{{ uploader: {uploader}, title: {part_title} }}"
+                )
+
     except VideoProcessingError:
         bot.send_message(message.chat.id, PROCESSING_ERROR_MSG)
