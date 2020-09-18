@@ -7,6 +7,7 @@ import youtube_dl
 
 STORE_PATH = "/tmp"
 FORMAT = "mp3"
+ALLOWED_HOSTS = ["youtu.be", "www.youtube.com"]
 
 ydl_opts = {
     "outtmpl": f"{STORE_PATH}/%(id)s.%(ext)s",
@@ -32,7 +33,7 @@ class VideoProcessingError(Exception):
 def validate_url(url):
     parsed_url = urlparse(url)
 
-    if parsed_url.netloc == "www.youtube.com":
+    if parsed_url.netloc in ALLOWED_HOSTS:
         return url
 
     raise NonYouTubeUrlError
