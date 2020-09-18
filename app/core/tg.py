@@ -37,6 +37,7 @@ def start_message(message):
 @bot.message_handler(func=lambda message: True)
 def process_message(message):
     url = message.text
+
     try:
         validate_url(url)
     except NonYouTubeUrlError:
@@ -49,7 +50,10 @@ def process_message(message):
             bot.send_audio(
                 message.chat.id, audio, caption=title, title=title, performer=uploader
             )
-            file_logger.info(f"{message.message_id} - {uploader} - {title}")
+            file_logger.info(
+                f"{message.message_id} - response: "
+                f"{{ uploader: {uploader}, title: {title} }}"
+            )
         try:
             os.remove(filepath)
         except OSError:

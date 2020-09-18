@@ -28,7 +28,8 @@ def webhook():
 
         msg = json.loads(json_string)["message"]
         file_logger.info(
-            f"{msg['message_id']} - {msg['from']['username']} - {msg['text']}"
+            f"{msg['message_id']} - request: "
+            f"{{ from: {msg['from']['username']}, text: {msg['text']} }}"
         )
 
         update = telebot.types.Update.de_json(json_string)
