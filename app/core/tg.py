@@ -3,6 +3,7 @@ import os
 import telebot
 
 from .settings import API_TOKEN
+from .default_logging import file_logger
 from .youtube_handler import (
     NonYouTubeUrlError,
     VideoProcessingError,
@@ -48,6 +49,10 @@ def process_message(message):
             bot.send_audio(
                 message.chat.id, audio, caption=title, title=title, performer=uploader
             )
-        os.remove(filepath)
+            file_logger.info(f"{message.message_id} - {uploader} - {title}")
+        try:
+            os.remove(filepath)
+        except OSError:
+            pass
     except VideoProcessingError:
         bot.send_message(message.chat.id, PROCESSING_ERROR_MSG)

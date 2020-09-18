@@ -18,3 +18,5 @@ WEBHOOK_URL_PATH = f"/{API_TOKEN}/"
 
 WEBHOOK_SSL_CERT = "/opt/podcastinate/app/core/certs/webhook_cert.pem"
 WEBHOOK_SSL_PKEY = "/opt/podcastinate/app/core/certs/webhook_pkey.pem"
+
+LOG_PATH = "/var/log/podcastinate_bot.log"

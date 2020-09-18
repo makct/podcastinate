@@ -2,11 +2,10 @@ import time
 
 import flask
 import telebot
+
+from core.default_logging import file_logger
 from core.settings import (
-    WEBHOOK_LISTEN,
-    WEBHOOK_PORT,
     WEBHOOK_SSL_CERT,
-    WEBHOOK_SSL_PKEY,
     WEBHOOK_URL_BASE,
     WEBHOOK_URL_PATH,
 )
@@ -25,6 +24,12 @@ def index():
 def webhook():
     if flask.request.headers.get("content-type") == "application/json":
         json_string = flask.request.get_data().decode("utf-8")
+
+        msg = json_string["message"]
+        file_logger.info(
+            f"{msg['message_id']} - {msg['from']['username']} - {msg['text']}"
+        )
+
         update = telebot.types.Update.de_json(json_string)
         bot.process_new_updates([update])
         return ""
