@@ -1,3 +1,4 @@
+import json
 import time
 
 import flask
@@ -25,7 +26,7 @@ def webhook():
     if flask.request.headers.get("content-type") == "application/json":
         json_string = flask.request.get_data().decode("utf-8")
 
-        msg = json_string["message"]
+        msg = json.loads(json_string)["message"]
         file_logger.info(
             f"{msg['message_id']} - {msg['from']['username']} - {msg['text']}"
         )
