@@ -11,25 +11,26 @@ from .youtube_handler import (
 )
 
 
+START_MSG = (
+    "Welcome to Podcastinate Bot! "
+    "Send me link to YouTube video and I'll send you audio from it back."
+)
+HELP_MSG = """Send YouTube video link to Bot and get audio from it back."""
+INVALID_LINK_MSG = "This is not YouTube video link, please try again."
+PROCESSING_ERROR_MSG = "Processing error. Check your link and try again later."
+
+
 bot = telebot.TeleBot(API_TOKEN)
-
-
-HELP_MESSAGE = """Send YouTube video link to Bot and get audio from it back."""
-INVALID_LINK_ERR = "This is not YouTube video link, please try again."
 
 
 @bot.message_handler(commands=["start"])
 def start_message(message):
-    msg = (
-        "Welcome to Podcastinate Bot! "
-        "Send me link to YouTube video and I'll send you audio from it back."
-    )
-    bot.send_message(message.chat.id, msg)
+    bot.send_message(message.chat.id, START_MSG)
 
 
 @bot.message_handler(commands=["help"])
 def start_message(message):
-    bot.send_message(message.chat.id, HELP_MESSAGE)
+    bot.send_message(message.chat.id, HELP_MSG)
 
 
 @bot.message_handler(func=lambda message: True)
@@ -38,7 +39,7 @@ def process_message(message):
     try:
         validate_url(url)
     except NonYouTubeUrlError:
-        bot.send_message(message.chat.id, INVALID_LINK_ERR)
+        bot.send_message(message.chat.id, INVALID_LINK_MSG)
         return
 
     try:
@@ -49,6 +50,4 @@ def process_message(message):
             )
         os.remove(filepath)
     except VideoProcessingError:
-        bot.send_message(
-            message.chat.id, "Processing error. Check your link and try again later."
-        )
+        bot.send_message(message.chat.id, PROCESSING_ERROR_MSG)
