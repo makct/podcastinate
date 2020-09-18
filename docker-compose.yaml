@@ -1,0 +1,18 @@
+version: "3.4"
+
+services:
+  podcastinate:
+    container_name: podcastinate
+    build:
+      context: ./
+    working_dir: /opt/podcastinate/app
+    ports:
+#      - 80:80
+#      - 443:433
+      - 8444:8444
+    environment:
+      - PYTHONPATH=/opt/podcastinate/app
+    volumes:
+      - ./app:/opt/podcastinate/app
+      - ./logs:/var/logs
+    command: /bin/sh runfiles/run_bot.sh
