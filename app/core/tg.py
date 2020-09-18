@@ -39,6 +39,7 @@ def process_message(message):
         validate_url(url)
     except NonYouTubeUrlError:
         bot.send_message(message.chat.id, INVALID_LINK_ERR)
+        return
 
     try:
         filepath, title, uploader = get_audio_from_video(url)
