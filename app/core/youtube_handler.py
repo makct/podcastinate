@@ -45,4 +45,8 @@ def get_audio_from_video(url):
         except youtube_dl.utils.YoutubeDLError as err:
             raise VideoProcessingError
 
-    return f"{STORE_PATH}/{result.get('id')}.{FORMAT}", result.get("title")
+    return (
+        f"{STORE_PATH}/{result.get('id')}.{FORMAT}",
+        result.get("title"),
+        result.get("uploader"),
+    )
