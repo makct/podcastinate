@@ -1,12 +1,6 @@
 from os import getenv
 
 
-# MYSQL_HOST = getenv("MYSQL_HOST", None)
-# MYSQL_PORT = getenv("MYSQL_PORT", None)
-# MYSQL_USER = getenv("MYSQL_USER", None)
-# MYSQL_PASSWORD = getenv("MYSQL_PASSWORD", None)
-# MYSQL_DB = getenv("MYSQL_DB", None)
-
 API_TOKEN = getenv("API_TOKEN", None)
 
 WEBHOOK_HOST = getenv("WEBHOOK_HOST", None)

@@ -16,8 +16,8 @@ START_MSG = (
     "Welcome to Podcastinate Bot! "
     "Send me link to YouTube video and I'll send you audio from it back."
 )
-HELP_MSG = """Send YouTube video link to Bot and get audio from it back."""
-INVALID_LINK_MSG = "This is not YouTube video link, please try again."
+HELP_MSG = "Send YouTube link to Bot and get audio back."
+INVALID_LINK_MSG = "It's not YouTube link, try again."
 PROCESSING_ERROR_MSG = "Processing error. Check your link and try again later."
 
 
