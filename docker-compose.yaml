@@ -12,6 +12,10 @@ services:
       - 8443:8443
     environment:
       - PYTHONPATH=/opt/podcastinate/app
+      - API_KEY=${API_KEY}
+      - WEBHOOK_PORT=${WEBHOOK_PORT}
+      - WEBHOOK_HOST=${WEBHOOK_HOST}
+      - WEBHOOK_LISTEN=${WEBHOOK_LISTEN}
     volumes:
       - ./app:/opt/podcastinate/app
       - ./logs:/var/logs
