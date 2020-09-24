@@ -7,9 +7,7 @@ services:
       context: ./
     working_dir: /opt/podcastinate/app
     ports:
-#      - 80:80
-#      - 443:433
-      - 8443:5000
+      - 55552:433
     environment:
       - PYTHONPATH=/opt/podcastinate/app
       - API_TOKEN=${API_TOKEN}
