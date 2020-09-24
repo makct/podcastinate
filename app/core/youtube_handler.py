@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
 import os
+import pathlib
+import subprocess
 from typing import List
 from urllib.parse import urlparse
 
 import youtube_dl
-from pydub import AudioSegment
 
 
 STORE_PATH = "/tmp"
@@ -42,27 +43,19 @@ def validate_url(url):
     raise NonYouTubeUrlError
 
 
-def split_audio(filepath) -> List[str]:
-    time_period = 50 * 60 * 1000
+def split_audio(filepath, tmp_dir) -> List[str]:
+    file_name = os.path.basename(filepath).split(".")[0]
 
-    if os.path.getsize(filepath) < 50 * 1024 * 1024:
-        return [filepath]
+    command = (
+        f"ffmpeg -i {filepath} -f segment -segment_time 2000 -c copy "
+        f"{tmp_dir}/{file_name}_part%01d.mp3 -hide_banner -loglevel panic"
+    )
+    process = subprocess.run(command.split())
 
-    audio = AudioSegment.from_mp3(filepath)
+    if process.returncode != 0:
+        raise VideoProcessingError
 
-    filename = os.path.basename(filepath).split(".")[0]
-
-    splitted_files = []
-    pos = 0
-
-    for i in range(len(audio) // time_period + 1):
-        audio_part = audio[pos : pos + time_period]
-        pos = pos + time_period
-        filename = f"/tmp/{filename}_part{i}.{FORMAT}"
-        audio_part.export(filename, format=FORMAT)
-        splitted_files.append(filename)
-
-    return splitted_files
+    return sorted([str(file) for file in pathlib.Path(tmp_dir).glob("**/*")])
 
 
 def get_audio_from_video(url):

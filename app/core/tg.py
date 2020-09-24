@@ -1,4 +1,5 @@
 import os
+from tempfile import TemporaryDirectory
 
 import telebot
 
@@ -56,22 +57,23 @@ def process_message(message):
 
     try:
         filepath, title, uploader = get_audio_from_video(url)
-        splitted_audio = split_audio(filepath)
 
-        if len(splitted_audio) == 1:
+        if os.path.getsize(filepath) < 50 * 1024 * 1024:
             send_audio(filepath, title, uploader, message.chat.id)
             file_logger.info(
                 f"{message.message_id} - response: "
                 f"{{ uploader: {uploader}, title: {title} }}"
             )
         else:
-            for number, file_part in enumerate(splitted_audio):
-                part_title = f"{title}. Part {number}"
-                send_audio(file_part, part_title, uploader, message.chat.id)
-                file_logger.info(
-                    f"{message.message_id} - response: "
-                    f"{{ uploader: {uploader}, title: {part_title} }}"
-                )
+            with TemporaryDirectory() as tpm_dir:
+                splitted_audio = split_audio(filepath, tpm_dir)
+                for number, file_part in enumerate(splitted_audio):
+                    part_title = f"{title}. Part {number}"
+                    send_audio(file_part, part_title, uploader, message.chat.id)
+                    file_logger.info(
+                        f"{message.message_id} - response: "
+                        f"{{ uploader: {uploader}, title: {part_title} }}"
+                    )
 
     except VideoProcessingError:
         bot.send_message(message.chat.id, PROCESSING_ERROR_MSG)
